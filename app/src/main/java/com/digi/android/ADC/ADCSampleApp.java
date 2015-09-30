@@ -1,4 +1,4 @@
-package com.example.android.ADC;
+package com.digi.android.ADC;
 
 import android.adc.ADC;
 import android.adc.ADCListener;
