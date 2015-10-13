@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">ADCSample</string>
+    <string name="app_name">ADC Sample</string>
 
     <color name="black">#666666</color>
     <color name="white">#FFFFFF</color>
+    <color name="light_gray">#DDDDDD</color>
 
     <string name="channel">ADC channel</string>
-    <string name="checkbox">Non-stop sampling</string>
+    <string name="checkbox">Non-stop</string>
     <string name="numSamples">Number of samples</string>
     <string name="samplePeriod">Sampling period (ms)</string>
     <string name="readSample">SAMPLE VALUE</string>
     <string name="receivedSamples">NUMBER OF SAMPLES</string>
-    <string name="sample_button">Start sampling</string>
-
+    <string name="startSampling">START SAMPLING</string>
+    <string name="stopSampling">STOP SAMPLING</string>
 
 </resources>
