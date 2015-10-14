@@ -5,7 +5,7 @@ This application demonstrates the usage of the ADC API by monitoring the sample
 conversion of a selectable ADC channel.
 
 The ConnectCore 6 SBC v2 platform has 3 available ADC channels located in the
-CPIO expansion connector as follows:
+GPIO expansion connector as follows:
 
 * Pin 1: PMIC_ADCIN1 / PMIC_GPIO0
 * Pin 2: PMIC_ADCIN2 / PMIC_GPIO1
@@ -53,7 +53,6 @@ Click the button again to stop the sample conversion.
 Compatible with
 ---------------
 
-* ConnectCore 6 SBC
 * ConnectCore 6 SBC v2
 
 License
