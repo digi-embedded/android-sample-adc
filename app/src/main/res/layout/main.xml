@@ -42,34 +42,6 @@
 
             </TableRow>
 
-            <TableRow android:layout_marginTop="20dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:labelFor="@+id/numSamples"
-                    android:text="@string/numSamples"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"/>
-
-                <EditText
-                    android:id="@+id/numSamples"
-                    android:layout_marginStart="20dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:inputType="numberDecimal"
-                    android:maxLength="5"
-                    android:textColor="@drawable/edittext"/>
-
-                <CheckBox
-                    android:id="@+id/checkbox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="10dp"
-                    android:text="@string/checkbox"/>
-
-            </TableRow>
-
             <TableRow
                 android:layout_marginBottom="40dp"
                 android:layout_marginTop="20dp">

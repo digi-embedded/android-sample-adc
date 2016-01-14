@@ -4,7 +4,7 @@ ADC Sample Application
 This application demonstrates the usage of the ADC API by monitoring the sample 
 conversion of a selectable ADC channel.
 
-The ConnectCore 6 SBC v2 platform has 3 available ADC channels located in the
+The ConnectCore 6 SBC v3 platform has 3 available ADC channels located in the
 GPIO expansion connector as follows:
 
 * Pin 1: PMIC_ADCIN1 / PMIC_GPIO0
@@ -38,27 +38,22 @@ The example is already configured, so all you need to do now is to build and
 launch the project.
 
 While it is running, the application displays some boxes to select the ADC
-channel to monitor, the desired number of samples, and the sampling period
-in ms.
+channel to monitor and the sampling period in milliseconds.
 
 Once configured, click **START SAMPLING** to start the conversion. Both sample
 values and number of samples are shown by the application.
 
-The sample conversion automatically stops when the configured number of samples
-is reach.
-
-If the Non-stop checkbox is set, the sample conversion continues indefinitely.
-Click the button again to stop the sample conversion.
+Click **STOP SAMPLING** to stop the receiving ADC samples.
 
 Compatible with
 ---------------
 
-* ConnectCore 6 SBC v2
+* ConnectCore 6 SBC v3
 
 License
 -------
 
-This software is open-source software. Copyright Digi International, 2014-2015.
+This software is open-source software. Copyright Digi International, 2014-2016.
 
 This Source Code Form is subject to the terms of the Mozilla Public License,
 v. 2.0. If a copy of the MPL was not distributed with this file, you can obtain
