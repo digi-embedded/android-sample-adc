@@ -10,12 +10,8 @@
  * =======================================================================
  */
 
-package com.digi.android.ADC;
+package com.digi.android.sample.adc;
 
-import android.adc.ADC;
-import android.adc.ADCManager;
-import android.adc.ADCSample;
-import android.adc.IADCListener;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,6 +22,11 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.digi.android.adc.ADC;
+import com.digi.android.adc.ADCManager;
+import com.digi.android.adc.ADCSample;
+import com.digi.android.adc.IADCListener;
 
 import java.lang.ref.WeakReference;
 
@@ -113,7 +114,7 @@ public class ADCSampleApp extends Activity implements OnClickListener, IADCListe
 		button.setOnClickListener(this);
 
 		// Get the ADC manager.
-		manager = (ADCManager)getSystemService(ADC_SERVICE);
+		manager = new ADCManager(this);
 	}
 
 	@Override
