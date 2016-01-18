@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.digi.android.ADC"
+    package="com.digi.android.sample.adc"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -10,8 +10,12 @@
         android:icon="@drawable/digi_icon"
         android:label="@string/app_name"
         android:allowBackup="true">
+        <uses-library
+            android:name="com.digi.android"
+            android:required="true" />
+
         <activity
-            android:name=".ADCSampleApp"
+            android:name="com.digi.android.sample.adc.ADCSampleApp"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
