@@ -83,7 +83,7 @@ public class ADCSampleApp extends Activity implements OnClickListener, IADCListe
 					adcSampleApp.samplesCount = adcSampleApp.samplesCount + 1;
 
 					// Show received sample.
-					adcSampleApp.readSample.setText(String.format("%d", adcSampleApp.receivedSample.getSample()));
+					adcSampleApp.readSample.setText(String.format("%d", adcSampleApp.receivedSample.getValue()));
 					adcSampleApp.receivedSamples.setText(String.format("%d", adcSampleApp.samplesCount));
 
 					break;
