@@ -36,9 +36,9 @@
                     android:layout_marginStart="20dp"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:inputType="numberDecimal"
                     android:maxLength="1"
-                    android:textColor="@drawable/edittext"/>
+                    android:textColor="@drawable/edittext"
+                    android:inputType="number"/>
 
             </TableRow>
 

@@ -151,13 +151,14 @@ public class ADCSampleApp extends Activity implements OnClickListener, IADCListe
 				return;
 			}
 
-			// Create ADC object and subscribe listener.
 			int mChannel = editTextToInt(channel);
-			if (mChannel < 0 || mChannel > 6) {
-				toast = Toast.makeText(getApplicationContext(), "Enter a valid channel number.", Toast.LENGTH_LONG);
+			if (mChannel < 1 || mChannel > 3) {
+				toast = Toast.makeText(getApplicationContext(), "Enter a valid channel number: 1, 2 or 3.", Toast.LENGTH_LONG);
 				toast.show();
 				return;
 			}
+
+			// Create ADC object and subscribe listener.
 			adc = manager.createADC(mChannel);
 			adc.registerListener(this);
 			hasSubscribed = true;
