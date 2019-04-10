@@ -26,12 +26,33 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:labelFor="@+id/chip"
+                    android:text="@string/chip"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"/>
+
+                <Spinner
+                    android:id="@+id/chip"
+                    android:layout_marginStart="20dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:maxLength="1"
+                    android:textColor="@drawable/edittext"
+                    android:inputType="number"/>
+
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:labelFor="@+id/channel"
                     android:text="@string/channel"
                     android:textColor="@color/white"
                     android:textSize="16sp"/>
 
-                <EditText
+                <Spinner
                     android:id="@+id/channel"
                     android:layout_marginStart="20dp"
                     android:layout_weight="1"

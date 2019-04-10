@@ -7,6 +7,7 @@
     <color name="white">#FFFFFF</color>
     <color name="light_gray">#DDDDDD</color>
 
+    <string name="chip">ADC chip</string>
     <string name="channel">ADC channel</string>
     <string name="checkbox">Non-stop</string>
     <string name="numSamples">Number of samples</string>

@@ -20,19 +20,30 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.digi.android.adc.ADC;
+import com.digi.android.adc.ADCChip;
 import com.digi.android.adc.ADCManager;
 import com.digi.android.adc.ADCSample;
 import com.digi.android.adc.IADCListener;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * ADC sample application.
@@ -46,15 +57,22 @@ import java.lang.ref.WeakReference;
 public class ADCSampleApp extends Activity implements OnClickListener, IADCListener {
 
 	// Constants.
+	private final static String TAG = "ADCSampleApp";
 	private final static int ACTION_DRAW_SAMPLE = 0;
 	private final static String START_SAMPLING = "START SAMPLING";
 	private final static String STOP_SAMPLING = "STOP SAMPLING";
+	private final static int DEFAULT_SAMPLE_RATE = 100;
 
 	// Variables.
-	private EditText channel, samplePeriod, readSample, receivedSamples;
+	private EditText samplePeriod, readSample, receivedSamples;
+	private Spinner adcChipSpinner, adcChannelSpinner;
 	private Button button;
 
 	private ADCManager manager;
+	private List<ADCChip> adcChips;
+	private ArrayAdapter<Integer> channelsAdapter;
+	private Map<ADCChip, List<Integer>> channelsPerChip = new HashMap<>();
+	private ADCChip selectedChip;
 	private ADC adc;
 	private ADCSample receivedSample;
 
@@ -102,23 +120,85 @@ public class ADCSampleApp extends Activity implements OnClickListener, IADCListe
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
 		// Instantiate the elements from layout.
-		channel = (EditText)findViewById(R.id.channel);
-		samplePeriod = (EditText)findViewById(R.id.samplePeriod);
-		button = (Button)findViewById(R.id.sample_button);
-		readSample = (EditText)findViewById(R.id.readSample);
-		receivedSamples = (EditText)findViewById(R.id.receivedSamples);
+		samplePeriod = findViewById(R.id.samplePeriod);
+		button = findViewById(R.id.sample_button);
+		readSample = findViewById(R.id.readSample);
+		receivedSamples = findViewById(R.id.receivedSamples);
+		adcChipSpinner = findViewById(R.id.chip);
+		adcChannelSpinner = findViewById(R.id.channel);
 
 		// Show initial values.
 		button.setText(START_SAMPLING);
 		readSample.setEnabled(false);
 		receivedSamples.setText("0");
 		receivedSamples.setEnabled(false);
+		samplePeriod.setText(String.valueOf(DEFAULT_SAMPLE_RATE));
 
 		// Set event listeners for layout elements.
 		button.setOnClickListener(this);
 
-		// Get the ADC manager.
+		// Get the ADC manager
 		manager = new ADCManager(this);
+
+		// Get available ADC chips and channels
+		adcChips = manager.getADCChips();
+		List<String> adcChipNames = new ArrayList<>(adcChips.size());
+		for (ADCChip adcChip : adcChips) {
+			Log.i(TAG, String.format("ADCChip: %s (driver %s), channels: %s",
+									 adcChip.getName(), adcChip.getDriverName(),
+									 adcChip.getAvailableChannels()));
+			channelsPerChip.put(adcChip, adcChip.getAvailableChannels());
+			adcChipNames.add(adcChip.getName());
+		}
+
+		ArrayAdapter<String> chipsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, adcChipNames);
+		chipsAdapter.setDropDownViewResource(android.R.layout.select_dialog_singlechoice);
+		adcChipSpinner.setAdapter(chipsAdapter);
+
+		channelsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, new ArrayList<Integer>());
+		channelsAdapter.setDropDownViewResource(android.R.layout.select_dialog_singlechoice);
+		adcChannelSpinner.setAdapter(channelsAdapter);
+
+		adcChipSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+				selectedChip = adcChips.get(position);
+				List<Integer> channels = channelsPerChip.get(selectedChip);
+				Collections.sort(channels);
+
+				channelsAdapter.clear();
+				channelsAdapter.addAll(channels);
+				channelsAdapter.notifyDataSetChanged();;
+
+				if (!channels.isEmpty())
+					adcChannelSpinner.setSelection(0);
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parentView) {
+				channelsAdapter.clear();
+				channelsAdapter.notifyDataSetChanged();;
+			}
+		});
+
+		adcChannelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+				adc = manager.createADC(selectedChip, (int) adcChannelSpinner.getSelectedItem());
+				button.setEnabled(true);
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				button.setEnabled(false);
+			}
+		});
+
+		if (chipsAdapter.isEmpty()) {
+			button.setEnabled(false);
+		} else {
+			adcChipSpinner.setSelection(1);
+		}
 	}
 
 	@Override
@@ -136,34 +216,19 @@ public class ADCSampleApp extends Activity implements OnClickListener, IADCListe
 
 	@Override
 	public void onClick(View v) {
+		if (adc == null)
+			return;
+
 		if (!isSampling) {
-			Toast toast;
-			// Check entered values.
-			if (channel.getText().length() == 0 || channel.getText().toString().contains(".")) {
-				toast = Toast.makeText(getApplicationContext(), "Enter a valid channel number.", Toast.LENGTH_LONG);
-				toast.show();
-				return;
-			}
-
 			if (samplePeriod.getText().length() == 0 || samplePeriod.getText().toString().contains(".")) {
-				toast = Toast.makeText(getApplicationContext(), "Enter a valid sample period.", Toast.LENGTH_LONG);
+				Toast toast = Toast.makeText(getApplicationContext(), "Enter a valid sample period.", Toast.LENGTH_LONG);
 				toast.show();
 				return;
 			}
 
-			int mChannel = editTextToInt(channel);
-			if (mChannel < 1 || mChannel > 3) {
-				toast = Toast.makeText(getApplicationContext(), "Enter a valid channel number: 1, 2 or 3.", Toast.LENGTH_LONG);
-				toast.show();
-				return;
-			}
-
-			// Create ADC object and subscribe listener.
-			adc = manager.createADC(mChannel);
 			adc.registerListener(this);
 			hasSubscribed = true;
 
-			channel.setEnabled(false);
 			samplePeriod.setEnabled(false);
 			button.setText(STOP_SAMPLING);
 
@@ -176,7 +241,6 @@ public class ADCSampleApp extends Activity implements OnClickListener, IADCListe
 			isSampling = false;
 			adc.stopSampling();
 
-			channel.setEnabled(true);
 			samplePeriod.setEnabled(true);
 			button.setText(START_SAMPLING);
 		}
