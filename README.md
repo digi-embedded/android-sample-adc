@@ -11,7 +11,25 @@ GPIO expansion connector as follows:
 * Pin 2: PMIC_ADCIN2 / PMIC_GPIO1
 * Pin 3: PMIC_ADCIN3 / PMIC_GPIO2
 
-**\*\* NOTE**: The maximum voltage level of the analog input is 2.5V.
+The ConnectCore 8X SBC platform has several ADC-capable pins located in the
+expansion connector:
+
+* Pin 5:  MCA_IO6
+* Pin 6:  MCA_IO7
+* Pin 7:  MCA_IO8
+* Pin 10: MCA_IO5
+* Pin 11: MCA_IO14
+* Pin 25: i.MX ADC channel 0
+* Pin 26: i.MX ADC channel 4
+* Pin 27: i.MX ADC channel 1
+* Pin 28: i.MX ADC channel 5
+
+**\*\* NOTE:** The MCA_IO lines need to be configure as ADC in order to be
+usable for this example. Note that not all MCA_IO lines are ADC-capable, but
+all the ones in the list above are ADC-capable.
+
+**\*\* NOTE:** The maximum voltage level of the analog input should not exceed
+the reference tension used by each ADC chip.
 
 Demo requirements
 -----------------
@@ -49,11 +67,12 @@ Compatible with
 ---------------
 
 * ConnectCore 6 SBC v3
+* ConnectCore 8X SBC Pro
 
 License
 -------
 
-Copyright (c) 2014-2016, Digi International Inc. <support@digi.com>
+Copyright (c) 2014-2019, Digi International Inc. <support@digi.com>
 
 Permission to use, copy, modify, and/or distribute this software for any
 purpose with or without fee is hereby granted, provided that the above
