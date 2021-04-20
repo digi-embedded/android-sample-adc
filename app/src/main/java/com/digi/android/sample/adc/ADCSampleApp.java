@@ -1,5 +1,5 @@
-/**
- * Copyright (c) 2014-2016, Digi International Inc. <support@digi.com>
+/*
+ * Copyright (c) 2014-2021, Digi International Inc. <support@digi.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -39,10 +39,10 @@ import com.digi.android.adc.IADCListener;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -65,13 +65,13 @@ public class ADCSampleApp extends Activity implements OnClickListener, IADCListe
 
 	// Variables.
 	private EditText samplePeriod, readSample, receivedSamples;
-	private Spinner adcChipSpinner, adcChannelSpinner;
+	private Spinner adcChannelSpinner;
 	private Button button;
 
 	private ADCManager manager;
 	private List<ADCChip> adcChips;
 	private ArrayAdapter<Integer> channelsAdapter;
-	private Map<ADCChip, List<Integer>> channelsPerChip = new HashMap<>();
+	private final Map<ADCChip, List<Integer>> channelsPerChip = new HashMap<>();
 	private ADCChip selectedChip;
 	private ADC adc;
 	private ADCSample receivedSample;
@@ -80,7 +80,7 @@ public class ADCSampleApp extends Activity implements OnClickListener, IADCListe
 	private boolean hasSubscribed = false;
 	private int samplesCount = 0;
 
-	private IncomingHandler handler = new IncomingHandler(this);
+	private final IncomingHandler handler = new IncomingHandler(this);
 
 	/**
 	 * Handler to manage UI calls from different threads.
@@ -96,19 +96,18 @@ public class ADCSampleApp extends Activity implements OnClickListener, IADCListe
 		public void handleMessage(Message msg) {
 			ADCSampleApp adcSampleApp = wActivity.get();
 
-			if (adcSampleApp == null)
+			if (adcSampleApp == null) {
 				return;
+			}
 
-			switch (msg.what) {
-				case ACTION_DRAW_SAMPLE:
-					// Update sample count.
-					adcSampleApp.samplesCount = adcSampleApp.samplesCount + 1;
+			if (msg.what == ACTION_DRAW_SAMPLE) {// Update sample count.
+				adcSampleApp.samplesCount = adcSampleApp.samplesCount + 1;
 
-					// Show received sample.
-					adcSampleApp.readSample.setText(String.format("%d", adcSampleApp.receivedSample.getValue()));
-					adcSampleApp.receivedSamples.setText(String.format("%d", adcSampleApp.samplesCount));
-
-					break;
+				// Show received sample.
+				adcSampleApp.readSample.setText(
+						String.format(Locale.getDefault(), "%d", adcSampleApp.receivedSample.getValue()));
+				adcSampleApp.receivedSamples.setText(
+						String.format(Locale.getDefault(), "%d", adcSampleApp.samplesCount));
 			}
 		}
 	}
@@ -124,7 +123,7 @@ public class ADCSampleApp extends Activity implements OnClickListener, IADCListe
 		button = findViewById(R.id.sample_button);
 		readSample = findViewById(R.id.readSample);
 		receivedSamples = findViewById(R.id.receivedSamples);
-		adcChipSpinner = findViewById(R.id.chip);
+		Spinner adcChipSpinner = findViewById(R.id.chip);
 		adcChannelSpinner = findViewById(R.id.channel);
 
 		// Show initial values.
@@ -144,7 +143,7 @@ public class ADCSampleApp extends Activity implements OnClickListener, IADCListe
 		adcChips = manager.getADCChips();
 		List<String> adcChipNames = new ArrayList<>(adcChips.size());
 		for (ADCChip adcChip : adcChips) {
-			Log.i(TAG, String.format("ADCChip: %s (driver %s), channels: %s",
+			Log.i(TAG, String.format(Locale.getDefault(), "ADCChip: %s (driver %s), channels: %s",
 									 adcChip.getName(), adcChip.getDriverName(),
 									 adcChip.getAvailableChannels()));
 			channelsPerChip.put(adcChip, adcChip.getAvailableChannels());
@@ -164,20 +163,22 @@ public class ADCSampleApp extends Activity implements OnClickListener, IADCListe
 			public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
 				selectedChip = adcChips.get(position);
 				List<Integer> channels = channelsPerChip.get(selectedChip);
-				Collections.sort(channels);
+				if (channels != null) {
+					Collections.sort(channels);
 
-				channelsAdapter.clear();
-				channelsAdapter.addAll(channels);
-				channelsAdapter.notifyDataSetChanged();;
+					channelsAdapter.clear();
+					channelsAdapter.addAll(channels);
+					channelsAdapter.notifyDataSetChanged();
 
-				if (!channels.isEmpty())
-					adcChannelSpinner.setSelection(0);
+					if (!channels.isEmpty())
+						adcChannelSpinner.setSelection(0);
+				}
 			}
 
 			@Override
 			public void onNothingSelected(AdapterView<?> parentView) {
 				channelsAdapter.clear();
-				channelsAdapter.notifyDataSetChanged();;
+				channelsAdapter.notifyDataSetChanged();
 			}
 		});
 
