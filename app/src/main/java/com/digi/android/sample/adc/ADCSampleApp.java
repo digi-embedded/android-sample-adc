@@ -198,7 +198,7 @@ public class ADCSampleApp extends Activity implements OnClickListener, IADCListe
 		if (chipsAdapter.isEmpty()) {
 			button.setEnabled(false);
 		} else {
-			adcChipSpinner.setSelection(1);
+			adcChipSpinner.setSelection(0);
 		}
 	}
 
